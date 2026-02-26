@@ -1,0 +1,110 @@
+const API_KEY = "PASTE_YOUR_NEW_KEY_HERE";  // <-- PUT YOUR NEW KEY HERE
+const IMG = "https://image.tmdb.org/t/p/original";
+const IMG_SMALL = "https://image.tmdb.org/t/p/w500";
+
+/* ---------------- LOGIN ---------------- */
+
+function openLogin() {
+    document.getElementById("loginModal").style.display = "flex";
+}
+
+function login() {
+    const name = document.getElementById("fullname").value.trim();
+    const email = document.getElementById("email").value.trim();
+
+    if (!name || !email) {
+        alert("Please enter Full Name and Email");
+        return;
+    }
+
+    document.getElementById("loginModal").style.display = "none";
+
+    const welcome = document.getElementById("welcomeScreen");
+    const text = document.getElementById("welcomeText");
+
+    text.innerHTML = name;
+    welcome.style.display = "flex";
+
+    setTimeout(() => {
+        welcome.style.display = "none";
+        document.getElementById("content").classList.remove("hidden");
+        loadContent();
+    }, 2500);
+}
+
+/* ---------------- LOAD MOVIES ---------------- */
+
+async function fetchMovies(url, containerId) {
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+
+        data.results.forEach(movie => {
+            if (!movie.poster_path) return;
+
+            const img = document.createElement("img");
+            img.src = IMG_SMALL + movie.poster_path;
+            img.onclick = () => openTrailer(movie.id);
+            container.appendChild(img);
+        });
+    } catch (err) {
+        console.error("Movie fetch error:", err);
+    }
+}
+
+async function loadContent() {
+
+    await fetchMovies(
+        `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`,
+        "trending"
+    );
+
+    await fetchMovies(
+        `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`,
+        "upcoming"
+    );
+}
+
+/* ---------------- TRAILER ---------------- */
+
+async function openTrailer(movieId) {
+    try {
+        const res = await fetch(
+            `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}`
+        );
+        const data = await res.json();
+
+        const trailer = data.results.find(
+            v => v.type === "Trailer" && v.site === "YouTube"
+        );
+
+        if (!trailer) {
+            alert("Trailer not available for this movie.");
+            return;
+        }
+
+        const modal = document.createElement("div");
+        modal.className = "modal";
+        modal.style.display = "flex";
+
+        modal.innerHTML = `
+            <div class="modal-box" style="max-width:900px;">
+                <iframe width="100%" height="450"
+                    src="https://www.youtube.com/embed/${trailer.key}?autoplay=1"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        `;
+
+        modal.onclick = () => modal.remove();
+        document.body.appendChild(modal);
+
+    } catch (err) {
+        console.error("Trailer error:", err);
+    }
+}

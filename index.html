@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CineVora | Founded by Syed Safee</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">
+        <div class="logo-main">CineVora</div>
+        <div class="logo-founder">Founded by Syed Safee</div>
+    </div>
+
+    <div class="user-area">
+        <button class="login-btn" id="loginBtn" onclick="openLogin()">Login</button>
+        <div class="dropdown hidden" id="userDropdown">
+            <div onclick="logout()">Logout</div>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO SECTION -->
+<div id="hero" class="hero">
+    <div class="hero-content">
+        <h1 id="heroTitle">CineVora</h1>
+        <p>Experience Cinema Like Never Before</p>
+        <button onclick="openLogin()" class="hero-btn">Enter the World</button>
+    </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+    <div class="login-box">
+        <h2>Enter CineVora</h2>
+        <input type="text" id="fullname" placeholder="Full Name">
+        <input type="email" id="email" placeholder="Email">
+        <button onclick="login()">ENTER</button>
+    </div>
+</div>
+
+<!-- WELCOME SCREEN -->
+<div id="welcomeScreen" class="welcome-screen">
+    <h1 id="welcomeText"></h1>
+</div>
+
+<!-- MOVIE CONTENT -->
+<div id="content" class="hidden">
+    <section>
+        <h2>Trending Now</h2>
+        <div id="movies" class="row"></div>
+    </section>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

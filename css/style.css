@@ -1,0 +1,318 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #000;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+}
+
+.logo-main {
+    font-size: 26px;
+    font-family: 'Cinzel', serif;
+    color: #ff0000;
+}
+
+.logo-founder {
+    font-size: 11px;
+    color: #aaa;
+}
+
+.login-btn {
+    background: #b30000;
+    border: none;
+    padding: 8px 18px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    position: relative;
+    z-index: 1100;
+}
+
+/* ================= HERO ================= */
+
+.hero {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 80px; /* space for navbar */
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2; /* ABOVE overlay */
+}
+
+.hero-content h1 {
+    font-size: 60px;
+    font-family: 'Cinzel', serif;
+    color: #ff0000;
+}
+
+.hero-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: #ff0000;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+
+/* ================= MODAL ================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,0.8);
+    z-index: 5000;
+}
+
+.login-box {
+    background: linear-gradient(145deg, #0a0a0a, #111);
+    padding: 50px;
+    border-radius: 15px;
+    width: 400px;
+    text-align: center;
+    border: 2px solid #8b0000;
+    box-shadow: 
+        0 0 20px #ff0000,
+        0 0 40px rgba(255,0,0,0.5);
+    animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.login-box h2 {
+    font-family: 'Cinzel', serif;
+    color: #ff0000;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 14px;
+    margin: 12px 0;
+    background: #1a1a1a;
+    border: 1px solid #ff0000;
+    color: white;
+    font-size: 15px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.login-box input:focus {
+    box-shadow: 0 0 12px red;
+    outline: none;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(45deg, #8b0000, #ff0000);
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.login-box button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px red;
+}
+
+/* ================= MOVIES ================= */
+
+section {
+    padding: 40px;
+}
+
+.row {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+}
+
+.row img {
+    width: 220px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.row img:hover {
+    transform: scale(1.1);
+}
+
+/* ================= WELCOME ================= */
+/* ================= WELCOME SCREEN ================= */
+
+.welcome-screen {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    z-index: 6000;
+    padding: 20px;
+    overflow: hidden;
+}
+
+#welcomeText {
+    position: relative;
+    font-family: 'Cinzel', serif;
+    font-size: 6vw;
+    color: #ff0000;
+    text-shadow:
+        0 0 10px #ff0000,
+        0 0 30px #8b0000,
+        0 0 60px #8b0000;
+    animation: bloodGlow 2s infinite alternate;
+}
+
+/* Glow animation */
+@keyframes bloodGlow {
+    from {
+        text-shadow:
+            0 0 10px #ff0000,
+            0 0 25px #8b0000;
+    }
+    to {
+        text-shadow:
+            0 0 25px #ff0000,
+            0 0 50px #8b0000;
+    }
+}
+
+/* Dripping blood effect */
+#welcomeText::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -20px;
+    width: 6px;
+    height: 0;
+    background: red;
+    animation: drip 2s infinite;
+}
+
+@keyframes drip {
+    0% { height: 0; opacity: 1; }
+    50% { height: 30px; opacity: 1; }
+    100% { height: 60px; opacity: 0; }
+}
+
+/* ================= HIDDEN ================= */
+
+.hidden {
+    display: none;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+    .hero-content h1 {
+        font-size: 32px;
+    }
+
+    .row img {
+        width: 150px;
+    }
+
+    .login-box {
+        width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    #welcomeText {
+        font-size: 10vw;
+    }
+
+    .login-box {
+        width: 90%;
+        padding: 30px;
+    }
+}
+
+.user-area {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background: #111;
+    border: 1px solid red;
+    box-shadow: 0 0 15px red;
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 2000;
+}
+
+.dropdown div {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.dropdown div:hover {
+    background: red;
+}
