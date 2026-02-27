@@ -1,57 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CineVora | Founded by Syed Safee</title>
+<meta charset="UTF-8">
+    <title>CineVora | Premium Streaming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
+    <div class="navbar-inner">
     <div class="logo">
-        <div class="logo-main">CineVora</div>
-        <div class="logo-founder">Founded by Syed Safee</div>
+        <span class="logo-text">CineVora</span>
+        <small>Founded by Syed Safee</small>
     </div>
 
-    <div class="user-area">
-        <button class="login-btn" id="loginBtn" onclick="openLogin()">Login</button>
-        <div class="dropdown hidden" id="userDropdown">
-            <div onclick="logout()">Logout</div>
-        </div>
+    <div class="nav-right">
+        <input type="text" id="searchInput" placeholder="Search movies...">
+        <button id="loginBtn" class="login-btn" onclick="openLogin()">Login</button>
+        <div id="userName" class="user-name hidden"></div>
     </div>
 </nav>
 
-<!-- HERO SECTION -->
-<div id="hero" class="hero">
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1 id="heroTitle">CineVora</h1>
+        <h1 class="hero-title">CineVora</h1>
         <p>Experience Cinema Like Never Before</p>
-        <button onclick="openLogin()" class="hero-btn">Enter the World</button>
+        <button class="hero-btn" onclick="openLogin()">Enter the World</button>
     </div>
-</div>
+</section>
 
 <!-- LOGIN MODAL -->
 <div id="loginModal" class="modal">
     <div class="login-box">
-        <h2>Enter CineVora</h2>
-        <input type="text" id="fullname" placeholder="Full Name">
-        <input type="email" id="email" placeholder="Email">
-        <button onclick="login()">ENTER</button>
+        <h1 class="login-logo">CineVora</h1>
+
+        <form id="loginForm">
+            <input type="text" id="fullname" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <button type="submit" class="enter-btn">Enter the World</button>
+        </form>
     </div>
 </div>
 
 <!-- WELCOME SCREEN -->
 <div id="welcomeScreen" class="welcome-screen">
-    <h1 id="welcomeText"></h1>
+    <div class="welcome-wrapper">
+        <h1 id="welcomeMain"></h1>
+        <p id="welcomeSub">Experience Cinema Like Never Before</p>
+    </div>
 </div>
 
-<!-- MOVIE CONTENT -->
-<div id="content" class="hidden">
-    <section>
-        <h2>Trending Now</h2>
-        <div id="movies" class="row"></div>
-    </section>
+<!-- MOVIES -->
+<section id="moviesSection" class="movies">
+    <h2>Trending Now</h2>
+    <div id="moviesGrid" class="movies-grid"></div>
+</section>
+
+<!-- VIDEO MODAL -->
+<!-- VIDEO MODAL -->
+<div id="videoModal" class="video-modal hidden">
+    <div class="video-container">
+        <button id="closeVideoBtn" class="close-btn">✕</button>
+        <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
+    </div>
 </div>
 
 <script src="js/script.js"></script>

@@ -1,144 +1,211 @@
-const API_KEY = "af631d4b194ea4562c90098dc0ab6b9c";
-const IMG = "https://image.tmdb.org/t/p/w500";
+document.addEventListener("DOMContentLoaded", function () {
 
-/* ================= HERO ================= */
+const API_KEY = "af631d4b194ea4562c90098dc0ab6b9c";
+const heroBtn = document.querySelector(".hero-btn");
+heroBtn.addEventListener("click", openLogin);
+const hero = document.querySelector(".hero");
+const moviesGrid = document.getElementById("moviesGrid");
+const loginModal = document.getElementById("loginModal");
+const loginBtn = document.getElementById("loginBtn");
+const loginForm = document.getElementById("loginForm");
+
+let bgIndex = 0;
+let backgrounds = [];
+
+/* HERO BACKGROUND */
+
+let heroBg1 = document.createElement("div");
+let heroBg2 = document.createElement("div");
+
+heroBg1.className = "hero-bg";
+heroBg2.className = "hero-bg";
+
+hero.appendChild(heroBg1);
+hero.appendChild(heroBg2);
+
+let activeBg = heroBg1;
+let nextBg = heroBg2;
 
 async function loadHero() {
     try {
-        const res = await fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`);
+        const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`);
         const data = await res.json();
+        backgrounds = data.results.slice(0, 6);
 
-        let index = 0;
-
-        setInterval(() => {
-            const movie = data.results[index];
-            if (movie.backdrop_path) {
-                document.getElementById("hero").style.backgroundImage =
-                    `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`;
-                document.getElementById("heroTitle").innerText = movie.title;
-            }
-            index = (index + 1) % data.results.length;
-        }, 4000);
-
+        setHeroBackground();
+        setInterval(setHeroBackground, 7000);
     } catch (err) {
-        console.log("Hero error:", err);
+        console.log("Hero load error:", err);
     }
 }
 
-/* ================= LOGIN MODAL ================= */
+function setHeroBackground() {
+    if (!backgrounds.length) return;
 
-function openLogin() {
-    document.getElementById("loginModal").style.display = "flex";
+    const movie = backgrounds[bgIndex];
+
+    const imageUrl =
+        `https://image.tmdb.org/t/p/original${movie.backdrop_path}`;
+
+    // preload image before switching
+    const img = new Image();
+    img.src = imageUrl;
+
+    img.onload = () => {
+        nextBg.style.backgroundImage = `url(${imageUrl})`;
+
+        nextBg.style.transition = "opacity 2s ease";
+	activeBg.style.transition = "opacity 2s ease";
+
+ 	nextBg.style.opacity = 1;
+        activeBg.style.opacity = 0;
+
+        [activeBg, nextBg] = [nextBg, activeBg];
+        bgIndex = (bgIndex + 1) % backgrounds.length;
+    };
 }
 
-/* ================= LOGIN PROCESS ================= */
-
-function login() {
-
-    const name = document.getElementById("fullname").value.trim();
-    const email = document.getElementById("email").value.trim();
-
-    if (!name || !email) {
-        alert("Please enter Full Name and Email");
-        return;
-    }
-
-    // Close modal
-    document.getElementById("loginModal").style.display = "none";
-
-    // Hide hero button
-    const heroBtn = document.querySelector(".hero-btn");
-    if (heroBtn) heroBtn.style.display = "none";
-
-    // Change navbar button to username
-    const loginBtn = document.getElementById("loginBtn");
-    loginBtn.innerText = name;
-    loginBtn.onclick = toggleDropdown;
-
-    // Welcome animation
-    const welcome = document.getElementById("welcomeScreen");
-    const welcomeText = document.getElementById("welcomeText");
-
-    welcomeText.innerText = name;
-    welcome.style.display = "flex";
-
-    setTimeout(() => {
-        welcome.style.display = "none";
-        document.getElementById("content").classList.remove("hidden");
-        loadMovies();
-    }, 3000);
-}
-
-/* ================= DROPDOWN ================= */
-
-function toggleDropdown() {
-    document.getElementById("userDropdown").classList.toggle("hidden");
-}
-
-function logout() {
-    location.reload();
-}
-
-/* ================= LOAD MOVIES ================= */
+/* MOVIES */
 
 async function loadMovies() {
     try {
-        const res = await fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`);
+        const res = await fetch(
+            `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`
+        );
+
         const data = await res.json();
 
-        const container = document.getElementById("movies");
-        container.innerHTML = "";
+        moviesGrid.innerHTML = "";
 
         data.results.forEach(movie => {
             if (!movie.poster_path) return;
 
-            const img = document.createElement("img");
-            img.src = IMG + movie.poster_path;
-            img.onclick = () => playTrailer(movie.id);
-            container.appendChild(img);
+            const div = document.createElement("div");
+            div.className = "movie-card";
+
+            div.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
+                <button class="watch-btn">Watch Now</button>
+            `;
+
+            div.querySelector(".watch-btn").onclick =
+                () => playTrailer(movie.id);
+
+            moviesGrid.appendChild(div);
         });
 
-    } catch (err) {
-        console.log("Movies error:", err);
+    } catch (error) {
+        console.log("Movie load error:", error);
     }
 }
 
-/* ================= TRAILER ================= */
+/* TRAILER */
 
 async function playTrailer(id) {
     try {
-        const res = await fetch(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}`);
-        const data = await res.json();
-
-        const trailer = data.results.find(v =>
-            v.type === "Trailer" && v.site === "YouTube"
+        const res = await fetch(
+            `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}`
         );
 
-        if (!trailer) {
-            alert("Trailer not available");
-            return;
+        const data = await res.json();
+        const trailer = data.results.find(v => v.type === "Trailer");
+
+        if (trailer) {
+            document.getElementById("videoModal")
+                .classList.remove("hidden");
+
+            document.getElementById("videoFrame").src =
+                `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
         }
-
-        const modal = document.createElement("div");
-        modal.className = "modal";
-        modal.style.display = "flex";
-
-        modal.innerHTML = `
-            <div style="width:80%; max-width:900px;">
-                <iframe width="100%" height="500"
-                    src="https://www.youtube.com/embed/${trailer.key}?autoplay=1"
-                    frameborder="0"
-                    allowfullscreen>
-                </iframe>
-            </div>
-        `;
-
-        modal.onclick = () => modal.remove();
-        document.body.appendChild(modal);
-
     } catch (err) {
         console.log("Trailer error:", err);
     }
 }
 
+function closeVideo() {
+    const modal = document.getElementById("videoModal");
+    const frame = document.getElementById("videoFrame");
+
+    modal.classList.add("hidden");
+    frame.src = "";
+}
+
+/* LOGIN */
+
+function openLogin() {
+    loginModal.style.display = "flex";
+}
+
+function closeLogin() {
+    loginModal.style.display = "none";
+}
+
+loginBtn.addEventListener("click", openLogin);
+
+loginForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("fullname").value.trim();
+    const email = document.getElementById("email").value.trim();
+
+    if (!name || !email) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    localStorage.setItem("cinevoraUser", name);
+
+    closeLogin();
+    showWelcome(name);
+});
+
+/* WELCOME */
+
+function showWelcome(name) {
+
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const welcomeMain = document.getElementById("welcomeMain");
+
+    welcomeMain.innerText = "WELCOME " + name.toUpperCase();
+
+    welcomeScreen.style.display = "flex";
+
+    setTimeout(() => {
+        welcomeScreen.style.display = "none";
+
+        hero.style.display = "none";
+        updateNavbarUser(name);
+
+    }, 3500);
+}
+
+function updateNavbarUser(name) {
+    loginBtn.style.display = "none";
+
+    const userName = document.getElementById("userName");
+    userName.innerText = name;
+    userName.classList.remove("hidden");
+}
+
+/* INIT */
+
 loadHero();
+loadMovies();
+
+});
+
+/* ================= VIDEO CLOSE FIX ================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const closeBtn = document.getElementById("closeVideoBtn");
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+            const modal = document.getElementById("videoModal");
+            const frame = document.getElementById("videoFrame");
+
+            modal.classList.add("hidden");
+            frame.src = "";
+        });
+    }
+});
